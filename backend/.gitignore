@@ -6,4 +6,3 @@ venv/
 secret.py
 __pycache__/
 *.pyc
-.env
