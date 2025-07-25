@@ -22,21 +22,23 @@ function App() {
 
   return (
     <div className="app">
-      <p>Write your code here!  </p>
-
-      <h1>Temperature (F)</h1>
-
-
-      <h1> Distance (cm)</h1>
+      <h1 > Title </h1>
+      <p className ="measurement.text"> Temperature (F)</p>
 
 
-      <h1> Humidity % </h1>
+
+      <p> Distance (cm)</p>
 
 
-      <h1> Light (Lumens) </h1>
+
+      <p> Humidity % </p>
 
 
-      
+
+      <p> Light (Lumens) </p>
+
+
+
 
 
 
