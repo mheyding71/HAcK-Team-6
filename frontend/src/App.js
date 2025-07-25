@@ -18,9 +18,30 @@ function App() {
     };
   }, []);
 
+  
+
   return (
     <div className="app">
-      <p>Write your code here!</p>
+      <p>Write your code here!  </p>
+
+      <h1>Temperature (F)</h1>
+
+
+      <h1> Distance (cm)</h1>
+
+
+      <h1> Humidity % </h1>
+
+
+      <h1> Light (Lumens) </h1>
+
+
+      
+
+
+
+
+
     </div>
   );
 }
