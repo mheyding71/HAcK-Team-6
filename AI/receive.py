@@ -23,5 +23,10 @@ def download_image():
 
 # TODO: Download the image and get a response from openai
 
+download_image()
+response = send_photo(filename)
+print("Response from OpenAI:", response)
+
+
 # TODO: How to control when to take photo?
 
