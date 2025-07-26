@@ -5,6 +5,7 @@ const express = require("express");
 const http = require('http');
 const MQTT = require('mqtt');
 const { spawn } = require('child_process');
+const path = require('path');
 const APP = express();
 const server = http.createServer(APP);
 const { Server } = require("socket.io");
@@ -93,6 +94,11 @@ const corsOptions = {
 APP.use(cors(corsOptions));
 APP.use(express.json());
 
+APP.use('/audio', express.static(path.join(__dirname, '../AI')));
+
+
+
+
 // Readings from sensors 
 let latestTemp = null;
 let latestUltrasonic = null;
@@ -122,7 +128,7 @@ io.on("connection", (socket) => {
     console.log('📸 Taking picture and getting AI description...');
     
     // Execute the Python script
-    const pythonProcess = spawn('python3', ['../AI/receive.py', 'get_description'], {
+    const pythonProcess = spawn('python3', ['../AI/receive.py'], {
       cwd: __dirname
     });
 

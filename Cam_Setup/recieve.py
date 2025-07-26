@@ -1,6 +1,6 @@
 import requests
 import os
-
+    
 # Get the folder where the script is located
 script_dir = os.path.dirname(os.path.abspath(__file__))
 filename = os.path.join(script_dir, "downloaded_image.jpg")
