@@ -101,7 +101,7 @@ let latestLight = null;
 
 io.on("connection", (socket) => {
   console.log("Frontend connected to socket");
-
+  
   // Send the latest sensor data to the newly connected client
   if (latestTemp) {
     socket.emit('temp', latestTemp);
@@ -121,6 +121,8 @@ io.on("connection", (socket) => {
   socket.on('take_picture', () => {
     console.log('📸 Taking picture and getting AI description...');
     
+    client.publish("camera/take", "snap");
+
     // Execute the Python script
     const pythonProcess = spawn('python3', ['../AI/receive.py'], {
       cwd: __dirname
