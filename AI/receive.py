@@ -3,6 +3,7 @@ import requests
 import os
 import sys
 from send_to_openai import send_photo, make_audible
+from send_to_openai import send_photo, make_audible
 
 # Get the folder where the script is located, done for you
 script_dir = os.path.dirname(os.path.abspath(__file__))
