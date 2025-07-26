@@ -2,6 +2,13 @@ import React, { useState, useEffect } from "react";
 import io from 'socket.io-client';
 import './App.css';
 
+
+
+
+// Connect to the Socket.IO server
+
+
+
 const socket = io('http://localhost:8000');
 
 function App() {
@@ -18,9 +25,32 @@ function App() {
     };
   }, []);
 
+  
+
   return (
     <div className="app">
-      <p>Write your code here!</p>
+      <h1 > Title </h1>
+      <p className ="measurement.text"> Temperature (F)</p>
+
+
+
+      <p> Distance (cm)</p>
+
+
+
+      <p> Humidity % </p>
+
+
+
+      <p> Light (Lumens) </p>
+
+
+
+
+
+
+
+
     </div>
   );
 }

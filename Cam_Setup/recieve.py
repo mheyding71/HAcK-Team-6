@@ -7,7 +7,7 @@ filename = os.path.join(script_dir, "downloaded_image.jpg")
 
 # Function to download the image
 def download_image():
-    url = "http://172.20.10.3/1600x1200.jpg"
+    url = "http://192.168.50.42/1600x1200.jpg"
     response = requests.get(url)
 
     if response.status_code == 200:

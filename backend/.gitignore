@@ -1,2 +1,5 @@
 /.env
-/node_modules
+venv/
+secret.py
+__pycache__/
+*.pyc
