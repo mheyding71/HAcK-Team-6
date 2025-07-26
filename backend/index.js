@@ -96,6 +96,7 @@ APP.use(express.json());
 
 APP.use('/audio', express.static(path.join(__dirname, '../AI')));
 
+APP.use('/images', express.static(path.join(__dirname, '../AI')));
 
 
 

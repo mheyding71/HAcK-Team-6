@@ -2,11 +2,11 @@ import React, { useState, useEffect } from "react";
 import io from 'socket.io-client';
 import './App.css';
 
-// Connect to the Socket.IO server
 const socket = io('http://localhost:8000');
 
 function App() {
   const [pictureStatus, setPictureStatus] = useState("");
+  const [imageKey, setImageKey] = useState(Date.now()); // 👈 used to force reload
   const [sensorData, setSensorData] = useState({
     temperature: null,
     distance: null,
@@ -14,12 +14,17 @@ function App() {
     light: null,
   });
 
-  // ✅ Correct place for useEffect
   useEffect(() => {
     socket.on('connect', () => console.log('Connected:', socket.id));
 
     socket.on('picture_taken', data => {
       setPictureStatus(data.message);
+
+      if (data.success) {
+        // 👇 update image by changing key
+        setImageKey(Date.now());
+      }
+
       setTimeout(() => setPictureStatus(""), 3000);
     });
 
@@ -51,7 +56,6 @@ function App() {
   function playAudio() {
     const audio = new Audio('http://localhost:8000/audio/speech.mp3');
     audio.play().catch(e => console.error("Error playing audio:", e));
-    console.log("PLaying...")
   }
 
   function export_photo() {
@@ -70,8 +74,19 @@ function App() {
         <p><strong>Distance (cm):</strong> {sensorData.distance ?? '--'}</p>
         <p><strong>Humidity (%):</strong> {sensorData.humidity ?? '--'}</p>
         <p><strong>Light (Lumens):</strong> {sensorData.light ?? '--'}</p>
+
         <button onClick={export_photo}>Take Photo</button>
         <button onClick={playAudio}>Play Sound</button>
+
+        {/* Image always shows, auto-refreshes when imageKey changes */}
+        <div style={{ marginTop: '20px' }}>
+          <p><strong>Captured Image:</strong></p>
+          <img
+            src={`http://localhost:8000/images/downloaded_image.jpg?ts=${imageKey}`}
+            alt="Captured"
+            style={{ width: '300px', height: 'auto', borderRadius: '8px' }}
+          />
+        </div>
       </div>
     </div>
   );
