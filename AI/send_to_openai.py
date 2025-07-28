@@ -35,7 +35,7 @@ def send_photo(image_path):
             {
                 "role": "user",
                 "content": [
-                    {"type": "text", "text": "What's in this image?"},
+                    {"type": "text", "text": "What's in this image? If it is a cactus - what is it, describe the room; mount rushmore - what is it, where is it; starry night - what is it, who painted itpotatoes - what is it, are there a lot??"},
                     {
                         "type": "image_url",
                         "image_url": {"url": image_url}
@@ -54,6 +54,6 @@ def make_audible(image_path):
     with client.audio.speech.with_streaming_response.create(
         model="gpt-4o-mini-tts",
         voice="coral",
-        input="Can you turn this into an audio file?: " + send_photo(image_path)
+        input=" " + send_photo(image_path)
     ) as response:
         response.stream_to_file(speech_file_path)

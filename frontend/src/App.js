@@ -13,11 +13,12 @@ function App() {
     humidity: null,
     light: null,
   });
-
+  const [inputText, setInputText] = useState(""); // ← new input state
   useEffect(() => {
     socket.on('connect', () => console.log('Connected:', socket.id));
 
     socket.on('picture_taken', data => {
+      console.log('📸 Taking picture and getting AI description...');  // ✅ THIS LINE
       setPictureStatus(data.message);
 
       if (data.success) {
@@ -28,21 +29,25 @@ function App() {
       setTimeout(() => setPictureStatus(""), 3000);
     });
 
-    socket.on('temp', value => {
-      setSensorData(prev => ({ ...prev, temperature: value }));
-    });
+socket.on('temp', value => {
+  console.log("🌡️ Received temp:", value); // ✅ Add this
+  setSensorData(prev => ({ ...prev, temperature: value }));
+});
 
-    socket.on('ultrasonic', value => {
-      setSensorData(prev => ({ ...prev, distance: value }));
-    });
+socket.on('ultrasonic', value => {
+  console.log("📏 Received distance:", value);
+  setSensorData(prev => ({ ...prev, distance: value }));
+});
 
-    socket.on('humidity', value => {
-      setSensorData(prev => ({ ...prev, humidity: value }));
-    });
+socket.on('humidity', value => {
+  console.log("💧 Received humidity:", value);
+  setSensorData(prev => ({ ...prev, humidity: value }));
+});
 
-    socket.on('light', value => {
-      setSensorData(prev => ({ ...prev, light: value }));
-    });
+socket.on('light', value => {
+  console.log("💡 Received light:", value);
+  setSensorData(prev => ({ ...prev, light: value }));
+});
 
     return () => {
       socket.off('picture_taken');
@@ -58,7 +63,16 @@ function App() {
     audio.play().catch(e => console.error("Error playing audio:", e));
   }
 
+  function handleTextSubmit() {
+    console.log("Submitted:", inputText);
+    socket.emit("user_input", inputText); 
+    setInputText(""); 
+  }
+
+
   function export_photo() {
+    console.log("📸 Take Picture button clicked frontend");  // ✅ ADD THIS
+
     socket.emit('take_picture');
     setPictureStatus("Taking picture...");
   }
@@ -75,8 +89,20 @@ function App() {
         <p><strong>Humidity (%):</strong> {sensorData.humidity ?? '--'}</p>
         <p><strong>Light (Lumens):</strong> {sensorData.light ?? '--'}</p>
 
+        <button onClick={() => socket.emit('servo_sweep')}>Turn Head</button>
+
         <button onClick={export_photo}>Take Photo</button>
         <button onClick={playAudio}>Play Sound</button>
+        <div style={{ marginTop: '20px' }}>
+          <input
+            type="text"
+            placeholder="Type your message..."
+            value={inputText}
+            onChange={(e) => setInputText(e.target.value)}
+            style={{ padding: '8px', width: '200px', marginRight: '10px' }}
+          />
+          <button onClick={handleTextSubmit}>Enter</button>
+        </div>
 
         {/* Image always shows, auto-refreshes when imageKey changes */}
         <div style={{ marginTop: '20px' }}>

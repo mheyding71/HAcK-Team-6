@@ -8,7 +8,7 @@ from send_to_openai import send_photo, make_audible
 script_dir = os.path.dirname(os.path.abspath(__file__))
 filename = os.path.join(script_dir, "downloaded_image.jpg")
 
-url = "http://192.168.50.42/1600x1200.jpg"             # You will have to change the IP Address
+url = "http://192.168.0.142/1600x1200.jpg"             # You will have to change the IP Address
 
 # Function to download the image from esp32, given to you
 def download_image():
