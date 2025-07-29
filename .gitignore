@@ -1,3 +1,4 @@
 AI/secrets.py
 AI/__pycache__/
 *.pyc
+*.pdf
