@@ -1,5 +1,5 @@
 from connections import connect_mqtt, connect_internet
-from machine import Pin, I2C, ADC, time_pulse_us
+from machine import PWM, Pin, I2C, ADC, time_pulse_us
 import dht
 import time
 import ssd1306
@@ -16,6 +16,9 @@ trig_pin = Pin(15, Pin.OUT)
 echo_pin = Pin(14, Pin.IN)
 photoresistor = ADC(Pin(26))        # GP26 (ADC0)
 temphum = dht.DHT11(Pin(13))        # DHT11 on GP13
+servo = PWM(Pin(16))  # GP16 controls the servo
+servo.freq(50)        # Standard servo frequency
+
 def display_message(text):
 
     oled.fill(0)
@@ -48,7 +51,7 @@ def read_sensors():
     try:
         temphum.measure()
         temp_f = temphum.temperature() * 9 / 5 + 32 - 6
-        humidity = temphum.humidity() + 18
+        humidity = temphum.humidity()
     except Exception as e:
         temp_f = None
         humidity = None
@@ -62,7 +65,13 @@ def read_sensors():
 def on_message(topic, msg):
     text = msg.decode()
     print(f"[MQTT] {topic.decode()}: {text}")
-    display_message(text)
+
+    if topic.decode() == "servo/sweep":
+        print("➡️ Running servo sweep!")
+        sweep_servo()
+    
+    if topic.decode() == "device/input":
+        display_message(text)
 def display_data(data):
     i2c = I2C(0, scl=Pin(1), sda=Pin(0), freq=400000)
     oled = ssd1306.SSD1306_I2C(128, 64, i2c)
@@ -73,15 +82,42 @@ def display_data(data):
     oled.text("Distance: {:.1f}cm".format(data["distance"]) if data["distance"] is not None else "Distance: N/A", 0, 20)
     oled.text("Light: {:.2f}".format(data["light"]), 0, 30)
     oled.show()
+def set_angle(angle):
+    # Clamp angle to range -120 to 120
+    angle = max(-120, min(120, angle))
+    # Shift -120–120 → 0–240, then map to 1000–9000
+    shifted = angle + 120
+    duty = int(1000 + (shifted / 240) * 8000)
+    servo.duty_u16(duty)
+
+def sweep_servo():
+    # From 0 to -120
+    for angle in range(0, -121, -5):
+        set_angle(angle)
+        time.sleep(0.04)
+
+    # From -120 to +120
+    for angle in range(-120, 121, 5):
+        set_angle(angle)
+        time.sleep(0.04)
+
+    # From +120 back to 0
+    for angle in range(120, -1, -5):
+        set_angle(angle)
+        time.sleep(0.04)
 
 def main():
     try:
-        connect_internet("HAcK-Project-WiFi-1", password="UCLA.HAcK.2024.Summer")
+        connect_internet("home24", password="helpfulmango482abc0123")
         client = connect_mqtt("89819e1e9cdd4652913ec1014279bd93.s1.eu.hivemq.cloud", "anguyen1713", "Hack2025Team6")
 
         client.set_callback(on_message)
         client.subscribe(b"device/input")
         print("Subscribed to device/input")
+        
+        client.subscribe(b"servo/sweep")
+        print("Subscribed to servo/sweep")
+
 
 
         while True:
@@ -105,5 +141,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
