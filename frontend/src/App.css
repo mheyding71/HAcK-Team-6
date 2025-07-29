@@ -1,0 +1,21 @@
+.app { 
+    text-align: center;
+
+}
+
+.body {
+    background-color: cyan;
+}
+
+.title {
+    text-align:center;
+    font-size: large;
+}
+
+.measurement.text{
+    text-align:left;
+}
+
+.button{
+    
+}
